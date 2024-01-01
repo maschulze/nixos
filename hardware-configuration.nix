@@ -8,7 +8,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-      ./disko-configuration.nix
+      ./hardware/disko-configuration.nix
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
