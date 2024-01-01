@@ -83,6 +83,7 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.worker = {
+    initialPassword = "test";
     isNormalUser = true;
     description = "Worker";
     extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
