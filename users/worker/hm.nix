@@ -4,7 +4,7 @@ let
 
 in
 {
-  imports = [ ../keybase.nix ];
+  # imports = [ ../keybase.nix ];
 
   nixpkgs.config.allowUnfree = true;
 
