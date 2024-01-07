@@ -6,6 +6,8 @@ in
 {
   imports = [ ./cachix.nix ];
 
+  system.stateVersion = "23.11";
+
   nix = {
 
     settings = {

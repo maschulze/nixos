@@ -6,4 +6,4 @@ sudo mv /mnt/etc/nixos /mnt/etc/nixos_aside
 
 sudo cp -r /tmp/nixos /mnt/etc/nixos
 
-# sudo nixos-install  --flake /mnt/etc/nixos#mynewsystem
+# sudo nixos-install  --impure --flake /mnt/etc/nixos#mynewsystem
