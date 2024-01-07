@@ -7,4 +7,7 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  boot.loader.grub.device = "/dev/vda";
+  boot.loader.grub.enable = true;
+  boot.loader.timeout = 60;
 }
