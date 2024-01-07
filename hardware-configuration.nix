@@ -3,7 +3,7 @@
 {
 
   imports = [
-    (modulesPat + "/profiles/qemu-guest.nix")
+    (modulesPath + "/profiles/qemu-guest.nix")
     "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
     ./disko-configuration.nix
   ];
