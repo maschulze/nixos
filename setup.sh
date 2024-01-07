@@ -2,8 +2,8 @@ sudo nix --experimental-features "nix-command flakes" run github:nix-community/d
 
 sudo nixos-generate-config --no-filesystems --root /mnt
 
-# sudo mv /tmp/nixos/configuration.nix /mnt/etc/nixos
-# sudo mv /tmp/nixos/hardware-configuration.nix /mnt/etc/nixos
-# sudo mv /tmp/nixos/disko-configuration.nix /mnt/etc/nixos
+sudo mv /mnt/etc/nixos /mnt/etc/nixos_aside
 
-# sudo nixos-install
+sudo cp -r /tmp/nixos /mnt/etc/nixos
+
+# sudo nixos-install  --flake /mnt/etc/nixos#mynewsystem
