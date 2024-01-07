@@ -13,6 +13,7 @@
   # boot.loader.grub.efiInstallAsRemovable = true;
   # boot.loader.grub.useOSProber = false;
 
+  networking.hostId = "deadbeef";
   networking.hostName = "myhost";
 
   networking.networkmanager.enable = true;
