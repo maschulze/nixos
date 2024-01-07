@@ -68,6 +68,11 @@
     {
       nixosConfigurations = {
 
+        qemunix = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = worker-modules ++ [ ./hosts/qemunix.nix ];
+        };
+
         thinknix460p = nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
           modules = worker-modules ++ [ ./hosts/thinknix460p.nix ];
