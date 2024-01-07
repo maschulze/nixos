@@ -4,7 +4,7 @@ let
 
 in
 {
-  imports = [ ./cachix.nix ];
+  # imports = [ ./cachix.nix ];
 
   system.stateVersion = "23.11";
 
@@ -32,21 +32,21 @@ in
 
   time.timeZone = "Europa/Berlin";
 
-  hardware.bluetooth.enable = true;
-  hardware.enableAllFirmware = true;
+  # hardware.bluetooth.enable = true;
+  # hardware.enableAllFirmware = true;
 
   # sound
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  services.pipewire = {
-    enable = true;
-    alsa = {
-      enable = true;
-      support32Bit = true;
-    };
-    jack.enable = true;
-    pulse.enable = true;
-  };
+  # sound.enable = true;
+  # hardware.pulseaudio.enable = false;
+  # services.pipewire = {
+  #   enable = true;
+  #   alsa = {
+  #     enable = true;
+  #     support32Bit = true;
+  #   };
+  #   jack.enable = true;
+  #   pulse.enable = true;
+  # };
 
   # virtualization
   # virtualisation.libvirtd.enable = true;
