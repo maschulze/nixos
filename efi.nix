@@ -3,8 +3,8 @@
 {
   # Use GRUB, assume UEFI
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.devices = [ "/dev/vda" ];
+  boot.loader.grub.device = "nodev";
+  boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.efiInstallAsRemovable = true;
   boot.loader.grub.efiSupport = true;
   # boot.loader.grub.splashImage = ./alwaysnix.png;
