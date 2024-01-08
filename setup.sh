@@ -66,7 +66,7 @@ mount ${DEVPREFIX}1 /mnt/boot
 mount -t zfs ${ROOTPLABEL}/home /mnt/home
 mount -t zfs ${ROOTPLABEL}/nix /mnt/nix
 
-sudo nixos-generate-config --no-filesystems --root /mnt
+sudo nixos-generate-config --root /mnt
 
 sudo mv /mnt/etc/nixos /mnt/etc/nixos_aside
 
