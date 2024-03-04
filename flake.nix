@@ -10,7 +10,7 @@
       systemSettings = {
         system = "x86_64-linux";
         hostname = "snowfire"; # hostname
-        profile = "personal"; # select a profile defined from my profiles directory
+        profile = "hyperv"; # select a profile defined from my profiles directory
         timezone = "Europe/Berlin"; # select timezone
         locale = "de_DE.UTF-8"; # select locale
         bootMode = "bios"; # uefi or bios
