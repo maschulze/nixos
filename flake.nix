@@ -11,11 +11,11 @@
         system = "x86_64-linux";
         hostname = "snowfire"; # hostname
         profile = "personal"; # select a profile defined from my profiles directory
-        timezone = "America/Chicago"; # select timezone
-        locale = "en_US.UTF-8"; # select locale
-        bootMode = "uefi"; # uefi or bios
+        timezone = "Europe/Berlin"; # select timezone
+        locale = "de_DE.UTF-8"; # select locale
+        bootMode = "bios"; # uefi or bios
         bootMountPath = "/boot"; # mount path for efi boot partition; only used for uefi boot mode
-        grubDevice = ""; # device identifier for grub; only used for legacy (bios) boot mode
+        grubDevice = "/dev/sda"; # device identifier for grub; only used for legacy (bios) boot mode
       };
 
       # ----- USER SETTINGS ----- #
@@ -58,8 +58,8 @@
 
       # Systems that can run tests:
       supportedSystems = [
-        "aarch64-linux"
-        "i686-linux"
+        # "aarch64-linux"
+        # "i686-linux"
         "x86_64-linux"
       ];
 
@@ -112,22 +112,22 @@
         };
       };
 
-      packages = forAllSystems (system:
-        let pkgs = nixpkgsFor.${system}; in
-        {
-          default = self.packages.${system}.install;
+      # packages = forAllSystems (system:
+      #   let pkgs = nixpkgsFor.${system}; in
+      #   {
+      #     default = self.packages.${system}.install;
 
-          install = pkgs.writeScriptBin "install" ./install.sh;
-        });
+      #     install = pkgs.writeScriptBin "install" ./install.sh;
+      #   });
 
-      apps = forAllSystems (system: {
-        default = self.apps.${system}.install;
+      # apps = forAllSystems (system: {
+      #   default = self.apps.${system}.install;
 
-        install = {
-          type = "app";
-          program = "${self.packages.${system}.install}/bin/install";
-        };
-      });
+      #   install = {
+      #     type = "app";
+      #     program = "${self.packages.${system}.install}/bin/install";
+      #   };
+      # });
     };
 
   inputs = {
