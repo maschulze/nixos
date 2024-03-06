@@ -13,7 +13,7 @@
     loader = {
       grub = {
         enable = true;
-        #        device = "/dev/sda";
+        # device = "/dev/vda";
       };
       timeout = 1;
     };

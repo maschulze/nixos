@@ -1,191 +1,309 @@
+#
+#  flake.nix *
+#   ├─ ./base
+#   │   └─ default.nix
+#   ├─ ./disko
+#   │   └─ simple-bios.nix
+#   │   └─ simple-efi.nix
+#   ├─ ./home
+#   │   └─ default.nix
+#   ├─ ./hosts
+#   │   └─ qemu.nix
+#   │   └─ thinkpad.nix
+#   ├─ ./modules
+#   │   └─ default.nix
+#   ├─ ./overlays
+#   │   └─ default.nix
+#   └─ ./services
+#       └─ default.nix
+#
+
 {
 
-  description = "Flake of maschulze";
+  description = "My Nix and NixOS System Flake Configuration";
 
-  outputs = inputs@{ self, nixpkgs, home-manager, /* nix-doom-emacs, nix-straight, stylix, blocklist-hosts, rust-overlay, hyprland-plugins, eaf, eaf-browser, org-nursery, org-yaap, org-side-tree, org-timeblock, phscroll, */ ... }:
+  inputs = {
+
+    nixpkgs = {
+      type = "github";
+      owner = "NixOS";
+      repo = "nixpkgs";
+      ref = "nixos-23.11";
+    };
+
+    # nixpkgs-unstable-small = {
+    #   type = "github";
+    #   owner = "NixOS";
+    #   repo = "nixpkgs";
+    #   ref = "nixos-unstable-small";
+    # };
+
+    # agenix = {
+    #   type = "github";
+    #   owner = "ryantm";
+    #   repo = "agenix";
+    # };
+
+    home-manager = {
+      type = "github";
+      owner = "nix-community";
+      repo = "home-manager";
+      ref = "release-23.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # flake-utils = {
+    #   type = "github";
+    #   owner = "numtide";
+    #   repo = "flake-utils";
+    #   ref = "master";
+    # };
+
+    nixos-hardware = {
+      type = "github";
+      owner = "NixOS";
+      repo = "nixos-hardware";
+      ref = "master";
+    };
+
+    disko = {
+      type = "github";
+      owner = "nix-community";
+      repo = "disko";
+      ref = "master";
+    };
+  };
+
+
+
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, disko, ... } @ inputs:
 
     let
 
-      # ---- SYSTEM SETTINGS ---- #
-      systemSettings = {
-        system = "x86_64-linux";
-        hostname = "snowfire"; # hostname
-        profile = "hyperv"; # select a profile defined from my profiles directory
-        timezone = "Europe/Berlin"; # select timezone
-        locale = "de_DE.UTF-8"; # select locale
-        bootMode = "bios"; # uefi or bios
-        bootMountPath = "/boot"; # mount path for efi boot partition; only used for uefi boot mode
-        grubDevice = "/dev/sda"; # device identifier for grub; only used for legacy (bios) boot mode
+      my_overlay = (self: super: {
+        # steam = super.steam.override {
+        #   extraProfile = "export STEAM_EXTRA_COMPAT_TOOLS_PATHS='${
+        #       nix-gaming.packages.${system}.proton-ge
+        #     }'";
+        # };
+        # # prevent openssh from checking perms of ~/.ssh/config to appease vscode
+        # # https://github.com/nix-community/home-manager/issues/322
+        # openssh = super.openssh.overrideAttrs (old: {
+        #   patches = (old.patches or [ ]) ++ [
+        #     ./patches/openssh-dontcheckconfigperms.patch
+        #   ];
+        #   doCheck = false;
+        # });
+      });
+
+      overlays = [ my_overlay ];
+
+      system = "x86_64-linux";
+
+      specialArgs = {
+        # pkgs-unstable = import nixpkgs-unstable {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # pkgs-olive = import nixpkgs-olive {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # pkgs-py36 = import nixpkgs-py36 {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # pkgs-py37 = import nixpkgs-py37 {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # pkgs-py39 = import nixpkgs-py39 {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # pkgs-keybase-bumpversion = import nixpkgs-keybase-bumpversion {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        # };
+        # bigger-darwin = nixtheplanet.legacyPackages.x86_64-linux.makeDarwinImage {
+        #   diskSizeBytes = 100000000000;
+        # };
+        # nixgl-olive = nixgl-olive.defaultPackage.x86_64-linux.nixGLIntel;
+
+        inherit nixos-hardware system inputs;
       };
 
-      # ----- USER SETTINGS ----- #
-      userSettings = rec {
-        username = "worker"; # username
-        name = "Worker"; # name/identifier
-        email = "7000347+maschulze@users.noreply.github.com"; # email (used for certain configurations)
-        dotfilesDir = "~/.dotfiles"; # absolute path of the local repo
-        theme = "uwunicorn-yt"; # selcted theme from my themes directory (./themes/)
-        wm = "hyprland"; # Selected window manager or desktop environment; must select one in both ./user/wm/ and ./system/wm/
-        # window manager type (hyprland or x11) translator
-        wmType = if (wm == "hyprland") then "wayland" else "x11";
-        browser = "qutebrowser"; # Default browser; must select one from ./user/app/browser/
-        defaultRoamDir = "Personal.p"; # Default org roam directory relative to ~/Org
-        term = "alacritty"; # Default terminal command;
-        font = "Intel One Mono"; # Selected font
-        fontPkg = pkgs.intel-one-mono; # Font package
-        editor = "emacsclient"; # Default editor;
-        # editor spawning translator
-        # generates a command that can be used to spawn editor inside a gui
-        # EDITOR and TERM session variables must be set in home.nix or other module
-        # I set the session variable SPAWNEDITOR to this in my home.nix for convenience
-        spawnEditor =
-          if (editor == "emacsclient") then "emacsclient -c -a 'emacs'"
-          else (if ((editor == "vim") || (editor == "nvim") || (editor == "nano")) then "exec " + term + " -e " + editor else editor);
-      };
-
-      # configure pkgs
-      pkgs = import nixpkgs {
-        system = systemSettings.system;
-        config = {
-          allowUnfree = true;
-          allowUnfreePredicate = (_: true);
-        };
-        # overlays = [ rust-overlay.overlays.default ];
-      };
-
-      # configure lib
-      lib = nixpkgs.lib;
-
-      # Systems that can run tests:
-      supportedSystems = [
-        # "aarch64-linux"
-        # "i686-linux"
-        "x86_64-linux"
+      worker-modules = [
+        ./users/worker/user.nix
+        home-manager.nixosModules.default
+        disko.nixosModules.default
+        # nixtheplanet.nixosModules.macos-ventura
+        {
+          home-manager = {
+            useUserPackages = true;
+            users.worker = import ./users/worker/home.nix;
+            extraSpecialArgs = specialArgs;
+          };
+        }
+        ({ config, pkgs, ... }: { nixpkgs.overlays = overlays; })
       ];
-
-      # Function to generate a set based on supported systems:
-      forAllSystems = inputs.nixpkgs.lib.genAttrs supportedSystems;
-
-      # Attribute set of nixpkgs for each system:
-      nixpkgsFor = forAllSystems (system: import inputs.nixpkgs { inherit system; });
 
     in
     {
-      homeConfigurations = {
-        user = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            (./. + "/profiles" + ("/" + systemSettings.profile) + "/home.nix") # load home.nix from selected PROFILE
-            #  inputs.nix-flatpak.homeManagerModules.nix-flatpak # Declarative flatpaks
-          ];
-          extraSpecialArgs = {
-            # pass config variables from above
-            inherit pkgs;
-            inherit systemSettings;
-            inherit userSettings;
-            # inherit (inputs) nix-doom-emacs;
-            # inherit (inputs) eaf;
-            # inherit (inputs) eaf-browser;
-            # inherit (inputs) org-nursery;
-            # inherit (inputs) org-yaap;
-            # inherit (inputs) org-side-tree;
-            # inherit (inputs) org-timeblock;
-            # inherit (inputs) phscroll;
-            # inherit (inputs) nix-flatpak;
-            # inherit (inputs) stylix;
-            # inherit (inputs) hyprland-plugins;
-          };
-        };
-      };
+
       nixosConfigurations = {
-        system = lib.nixosSystem {
-          system = systemSettings.system;
-          modules = [ (./. + "/profiles" + ("/" + systemSettings.profile) + "/configuration.nix") ]; # load configuration.nix from selected PROFILE
-          specialArgs = {
-            # pass config variables from above
-            inherit pkgs;
-            inherit systemSettings;
-            inherit userSettings;
-            # inherit (inputs) stylix;
-            # inherit (inputs) blocklist-hosts;
-          };
+        hypernix = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = worker-modules ++ [ ./hosts/hypernix.nix ];
+        };
+        qemunix = nixpkgs.lib.nixosSystem {
+          inherit system specialArgs;
+          modules = worker-modules ++ [ ./hosts/qemunix.nix ];
         };
       };
 
-      # packages = forAllSystems (system:
-      #   let pkgs = nixpkgsFor.${system}; in
-      #   {
-      #     default = self.packages.${system}.install;
+  #     vars = {
+  #       user = "worker";
+  #     };
 
-      #     install = pkgs.writeScriptBin "install" ./install.sh;
-      #   });
+  #     nixosModules = {
 
-      # apps = forAllSystems (system: {
-      #   default = self.apps.${system}.install;
+  #       home = {
+  #         home-manager.useGlobalPkgs = true;
+  #         home-manager.useUserPackages = true;
+  #         home-manager.users.${self.vars.user} = import ./home;
+  #         home-manager.verbose = true;
+  #       };
 
-      #   install = {
-      #     type = "app";
-      #     program = "${self.packages.${system}.install}/bin/install";
-      #   };
-      # });
+  #       # nix-path = {
+  #       #   nix = {
+  #       #     nixPath = [
+  #       #       "nixpkgs=${inputs.nixpkgs}"
+  #       #     ];
+  #       #     registry = {
+  #       #       nixpkgs.flake = inputs.nixpkgs;
+  #       #     };
+  #       #   };
+  #       # };
+  #     };
+
+  #     overlays = import ./overlays;
+
+  #     nixosConfigurations =
+  #       let
+  #         system = "x86_64-linux";
+  #         shared_overlays =
+  #           [
+  #             (self: super: {
+  #               packages = import ./pkgs { pkgs = super; };
+
+  #               # packages accessible through pkgs.unstable.package
+  #               # unstable = import inputs.nixpkgs-unstable-small {
+  #               #   inherit system;
+  #               #   config.allowUnfree = true;
+  #               # };
+  #             })
+
+  #             # agenix.overlays.default
+  #           ]
+  #           ++ builtins.attrValues self.overlays;
+
+  #         sharedModules =
+  #           [
+  #             # agenix.nixosModules.default
+  #             home-manager.nixosModules.default
+  #             {
+  #               nixpkgs = {
+  #                 overlays = shared_overlays;
+  #                 config.permittedInsecurePackages = [ ];
+  #               };
+  #               hardware.enableRedistributableFirmware = true;
+  #             }
+  #           ]
+  #           ++ (nixpkgs.lib.attrValues self.nixosModules);
+
+  #       in
+  #       {
+
+  #         qemu = nixpkgs.lib.nixosSystem {
+  #           inherit system;
+  #           modules =
+  #             [
+  #               disko.nixosModules.default
+  #               ./hosts/qemu.nix
+  #             ]
+  #             ++ sharedModules;
+  #         };
+
+  #         thinkpad = nixpkgs.lib.nixosSystem {
+  #           inherit system;
+  #           modules =
+  #             [
+  #               disko.nixosModules.default
+  #               ./hosts/thinkpad.nix
+  #             ]
+  #             ++ sharedModules;
+  #         };
+
+  #         # hades = nixpkgs.lib.nixosSystem rec {
+  #         #   inherit system;
+  #         #   modules =
+  #         #     [
+  #         #       ./hades.nix
+  #         #     ]
+  #         #     ++ sharedModules;
+  #         # };
+
+  #         # boreal = nixpkgs.lib.nixosSystem rec {
+  #         #   inherit system;
+  #         #   modules =
+  #         #     [
+  #         #       ./boreal.nix
+
+  #         #       {
+  #         #         nixpkgs.overlays = [
+  #         #           # uncomment this to build everything from scratch, fun but takes a
+  #         #           # while
+  #         #           #
+  #         #           # (self: super: {
+  #         #           #   stdenv = super.impureUseNativeOptimizations super.stdenv;
+  #         #           # })
+  #         #         ];
+  #         #       }
+  #         #     ]
+  #         #     ++ sharedModules;
+  #         # };
+
+  #         # hephaestus = nixpkgs.lib.nixosSystem rec {
+  #         #   inherit system;
+  #         #   modules =
+  #         #     [
+  #         #       ./hephaestus.nix
+
+  #         #       inputs.nixos-hardware.nixosModules.common-cpu-amd
+  #         #       inputs.nixos-hardware.nixosModules.common-gpu-amd
+  #         #       inputs.nixos-hardware.nixosModules.common-pc-laptop
+  #         #       inputs.nixos-hardware.nixosModules.common-pc-ssd
+  #         #     ]
+  #         #     ++ sharedModules;
+  #         # };
+
+  #         # thanatos = nixpkgs.lib.nixosSystem {
+  #         #   inherit system;
+  #         #   modules =
+  #         #     [
+  #         #       disko.nixosModules.default
+  #         #       ./thanatos.nix
+  #         #     ]
+  #         #     ++ sharedModules;
+  #         # };
+        # };
     };
-
-  inputs = {
-    nixpkgs.url = "nixpkgs/nixos-23.11";
-
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-    # nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";
-
-    # nix-straight.url = "github:librephoenix/nix-straight.el/pgtk-patch";
-    # nix-straight.flake = false;
-    # nix-doom-emacs.inputs.nix-straight.follows = "nix-straight";
-
-    # eaf = {
-    #   url = "github:emacs-eaf/emacs-application-framework";
-    #   flake = false;
-    # };
-    # eaf-browser = {
-    #   url = "github:emacs-eaf/eaf-browser";
-    #   flake = false;
-    # };
-    # org-nursery = {
-    #   url = "github:chrisbarrett/nursery";
-    #   flake = false;
-    # };
-    # org-yaap = {
-    #   url = "gitlab:tygrdev/org-yaap";
-    #   flake = false;
-    # };
-    # org-side-tree = {
-    #   url = "github:localauthor/org-side-tree";
-    #   flake = false;
-    # };
-    # org-timeblock = {
-    #   url = "github:ichernyshovvv/org-timeblock";
-    #   flake = false;
-    # };
-    # phscroll = {
-    #   url = "github:misohena/phscroll";
-    #   flake = false;
-    # };
-
-    # stylix.url = "github:danth/stylix";
-
-    # rust-overlay.url = "github:oxalica/rust-overlay";
-
-    # nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.2.0";
-
-    # blocklist-hosts = {
-    #   url = "github:StevenBlack/hosts";
-    #   flake = false;
-    # };
-
-    # hyprland-plugins = {
-    #   url = "github:hyprwm/hyprland-plugins";
-    #   flake = false;
-    # };
-  };
+  # # inputs.flake-utils.lib.eachDefaultSystem (system: {
+  # #   packages =
+  # #     inputs.flake-utils.lib.flattenTree
+  # #     (import ./pkgs {
+  # #       pkgs = import nixpkgs {inherit system;};
+  # #     });
+  # # });
 }
