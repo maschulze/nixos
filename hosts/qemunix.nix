@@ -1,6 +1,9 @@
 { ... }: {
 
   imports = [
+    # Apps definitions
+    ./shared/apps
+
     # Module definitions
     ./shared/modules
 

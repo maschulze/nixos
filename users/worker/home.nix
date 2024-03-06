@@ -22,7 +22,7 @@ in
 {
   imports = [ ../home-shared.nix ];
 
-  my.home.git.enable = true;
+  apps.system.git.enable = true;
   my.home.htop.enable = true;
 
   # programs.zsh = {
