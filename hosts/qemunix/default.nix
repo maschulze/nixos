@@ -7,14 +7,14 @@
     (import ../shared/disko/simple-bios.nix { device = "/dev/vda"; })
     # ./home.nix
 
-    # Apps definitions
-    ../shared/apps
+    # # Apps definitions
+    # ../shared/apps
 
-    # Module definitions
-    ../shared/modules
+    # # Module definitions
+    # ../shared/modules
 
-    # Service definitions
-    ../shared/services
+    # # Service definitions
+    # ../shared/services
   ];
 
   boot = {

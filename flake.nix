@@ -158,7 +158,7 @@
         };
         qemunix = nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules = worker-modules ++ [ ./hosts/qemunix ];
+          modules = worker-modules ++ [ ./hosts/qemunix.nix ];
         };
       };
 
