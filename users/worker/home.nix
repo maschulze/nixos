@@ -22,7 +22,7 @@ in
 {
   imports = [
 
-    # ../../options.nix
+    ../../options.nix
 
     ../home-shared.nix
 

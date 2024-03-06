@@ -80,8 +80,6 @@
 
     let
 
-      options = import ../options.nix;
-
       my_overlay = (self: super: {
         # steam = super.steam.override {
         #   extraProfile = "export STEAM_EXTRA_COMPAT_TOOLS_PATHS='${
