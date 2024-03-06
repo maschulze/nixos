@@ -8,6 +8,8 @@ let
 in
 {
 
+  options = { };
+
   config = mkIf cfg.enable {
 
     programs.git = {
