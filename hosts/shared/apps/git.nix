@@ -25,8 +25,8 @@ in
       # };
       # lfs.enable = true;
 
-      # userName = "maschulze";
-      # userEmail = "7000347+maschulze@users.noreply.github.com";
+      userName = "maschulze";
+      userEmail = "7000347+maschulze@users.noreply.github.com";
 
       # extraConfig = {
       #   commit = { verbose = true; };
