@@ -130,7 +130,7 @@
         # };
         # nixgl-olive = nixgl-olive.defaultPackage.x86_64-linux.nixGLIntel;
 
-        inherit nixos-hardware system inputs options;
+        inherit nixos-hardware system inputs;
       };
 
       worker-modules = [
