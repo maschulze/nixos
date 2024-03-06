@@ -154,11 +154,11 @@
       nixosConfigurations = {
         hypernix = nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules = worker-modules ++ [ ./hosts/hypernix.nix ];
+          modules = [ ./options.nix ] ++ worker-modules ++ [ ./hosts/hypernix.nix ];
         };
         qemunix = nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules = worker-modules ++ [ ./hosts/qemunix.nix ];
+          modules = [ ./options.nix ] ++ worker-modules ++ [ ./hosts/qemunix.nix ];
         };
       };
 

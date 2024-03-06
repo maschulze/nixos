@@ -7,9 +7,9 @@ let
 
 in
 {
-  options.apps.system.git = {
-    enable = mkEnableOption "Git configuration";
-  };
+  # options.apps.system.git = {
+  #   enable = mkEnableOption "Git configuration";
+  # };
 
   config = mkIf cfg.enable {
 
