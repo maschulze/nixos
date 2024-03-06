@@ -37,7 +37,6 @@
 
   apps.system.git.enable = true;
 
-
   environment.systemPackages = with pkgs; [
     neofetch
   ];

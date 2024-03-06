@@ -7,7 +7,7 @@ let
 
 in
 {
-  options.apps.system.hello = {
+  options.apps.system.git = {
     enable = mkEnableOption "Git configuration";
   };
 
