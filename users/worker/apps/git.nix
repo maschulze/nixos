@@ -12,7 +12,7 @@ in
 
     programs.git = {
 
-      # enable = true;
+      enable = true;
 
       # delta = {
       #   enable = true;
