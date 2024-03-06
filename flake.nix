@@ -80,7 +80,7 @@
 
     let
 
-      options = import (../options.nix);
+      options = import ../options.nix;
 
       my_overlay = (self: super: {
         # steam = super.steam.override {
