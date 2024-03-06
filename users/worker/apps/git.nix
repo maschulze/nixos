@@ -3,7 +3,7 @@
 with lib;
 let
 
-  cfg = config.apps.system.git;
+  cfg = apps.system.git;
 
 in
 {
