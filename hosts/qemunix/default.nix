@@ -6,6 +6,15 @@
     ./hardware-configuration.nix
     (import ../shared/disko/simple-bios.nix { device = "/dev/vda"; })
     # ./home.nix
+
+    # Apps definitions
+    ../shared/apps
+
+    # Module definitions
+    ../shared/modules
+
+    # Service definitions
+    ../shared/services
   ];
 
   boot = {
@@ -38,4 +47,12 @@
   # - This includes man pages like configuration.nix(5), if documentation.man.enable is set.
   # - This includes the HTML manual and the nixos-help command, if documentation.doc.enable is set.
   documentation.nixos.enable = false;
+
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "23.11"; # Did you read the comment?
 }
