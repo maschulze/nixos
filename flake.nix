@@ -134,6 +134,7 @@
       };
 
       worker-modules = [
+        ./options.nix
         ./users/worker/user.nix
         home-manager.nixosModules.default
         disko.nixosModules.default
