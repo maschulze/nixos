@@ -7,15 +7,12 @@ let
 
 in
 {
-  options.apps.system.git = {
-    enable = mkEnableOption "Git configuration";
-  };
 
   config = mkIf cfg.enable {
 
     programs.git = {
 
-      enable = true;
+      # enable = true;
 
       # delta = {
       #   enable = true;
@@ -25,8 +22,8 @@ in
       # };
       # lfs.enable = true;
 
-      # userName = "maschulze";
-      # userEmail = "7000347+maschulze@users.noreply.github.com";
+      userName = "maschulze";
+      userEmail = "7000347+maschulze@users.noreply.github.com";
 
       # extraConfig = {
       #   commit = { verbose = true; };

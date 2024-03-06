@@ -20,7 +20,11 @@ let
 in
 
 {
-  imports = [ ../home-shared.nix ];
+  imports = [ 
+        ../home-shared.nix
+
+        ./apps
+     ];
 
   my.home.htop.enable = true;
 
