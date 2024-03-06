@@ -1,6 +1,8 @@
 { ... }: {
 
   imports = [
+    ../options.nix
+
     # Apps definitions
     ./shared/apps
 
