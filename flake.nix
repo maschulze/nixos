@@ -130,11 +130,12 @@
         # };
         # nixgl-olive = nixgl-olive.defaultPackage.x86_64-linux.nixGLIntel;
 
+        pkgs-options = import ( ../options.nix );
+
         inherit nixos-hardware system inputs;
       };
 
       worker-modules = [
-        ./options.nix
         ./users/worker/user.nix
         home-manager.nixosModules.default
         disko.nixosModules.default
