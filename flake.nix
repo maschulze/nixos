@@ -80,6 +80,8 @@
 
     let
 
+      options = import (../options.nix);
+
       my_overlay = (self: super: {
         # steam = super.steam.override {
         #   extraProfile = "export STEAM_EXTRA_COMPAT_TOOLS_PATHS='${
@@ -130,9 +132,7 @@
         # };
         # nixgl-olive = nixgl-olive.defaultPackage.x86_64-linux.nixGLIntel;
 
-        pkgs-options = import ( ../options.nix );
-
-        inherit nixos-hardware system inputs;
+        inherit nixos-hardware system inputs options;
       };
 
       worker-modules = [
@@ -164,142 +164,142 @@
         };
       };
 
-  #     vars = {
-  #       user = "worker";
-  #     };
+      #     vars = {
+      #       user = "worker";
+      #     };
 
-  #     nixosModules = {
+      #     nixosModules = {
 
-  #       home = {
-  #         home-manager.useGlobalPkgs = true;
-  #         home-manager.useUserPackages = true;
-  #         home-manager.users.${self.vars.user} = import ./home;
-  #         home-manager.verbose = true;
-  #       };
+      #       home = {
+      #         home-manager.useGlobalPkgs = true;
+      #         home-manager.useUserPackages = true;
+      #         home-manager.users.${self.vars.user} = import ./home;
+      #         home-manager.verbose = true;
+      #       };
 
-  #       # nix-path = {
-  #       #   nix = {
-  #       #     nixPath = [
-  #       #       "nixpkgs=${inputs.nixpkgs}"
-  #       #     ];
-  #       #     registry = {
-  #       #       nixpkgs.flake = inputs.nixpkgs;
-  #       #     };
-  #       #   };
-  #       # };
-  #     };
+      #       # nix-path = {
+      #       #   nix = {
+      #       #     nixPath = [
+      #       #       "nixpkgs=${inputs.nixpkgs}"
+      #       #     ];
+      #       #     registry = {
+      #       #       nixpkgs.flake = inputs.nixpkgs;
+      #       #     };
+      #       #   };
+      #       # };
+      #     };
 
-  #     overlays = import ./overlays;
+      #     overlays = import ./overlays;
 
-  #     nixosConfigurations =
-  #       let
-  #         system = "x86_64-linux";
-  #         shared_overlays =
-  #           [
-  #             (self: super: {
-  #               packages = import ./pkgs { pkgs = super; };
+      #     nixosConfigurations =
+      #       let
+      #         system = "x86_64-linux";
+      #         shared_overlays =
+      #           [
+      #             (self: super: {
+      #               packages = import ./pkgs { pkgs = super; };
 
-  #               # packages accessible through pkgs.unstable.package
-  #               # unstable = import inputs.nixpkgs-unstable-small {
-  #               #   inherit system;
-  #               #   config.allowUnfree = true;
-  #               # };
-  #             })
+      #               # packages accessible through pkgs.unstable.package
+      #               # unstable = import inputs.nixpkgs-unstable-small {
+      #               #   inherit system;
+      #               #   config.allowUnfree = true;
+      #               # };
+      #             })
 
-  #             # agenix.overlays.default
-  #           ]
-  #           ++ builtins.attrValues self.overlays;
+      #             # agenix.overlays.default
+      #           ]
+      #           ++ builtins.attrValues self.overlays;
 
-  #         sharedModules =
-  #           [
-  #             # agenix.nixosModules.default
-  #             home-manager.nixosModules.default
-  #             {
-  #               nixpkgs = {
-  #                 overlays = shared_overlays;
-  #                 config.permittedInsecurePackages = [ ];
-  #               };
-  #               hardware.enableRedistributableFirmware = true;
-  #             }
-  #           ]
-  #           ++ (nixpkgs.lib.attrValues self.nixosModules);
+      #         sharedModules =
+      #           [
+      #             # agenix.nixosModules.default
+      #             home-manager.nixosModules.default
+      #             {
+      #               nixpkgs = {
+      #                 overlays = shared_overlays;
+      #                 config.permittedInsecurePackages = [ ];
+      #               };
+      #               hardware.enableRedistributableFirmware = true;
+      #             }
+      #           ]
+      #           ++ (nixpkgs.lib.attrValues self.nixosModules);
 
-  #       in
-  #       {
+      #       in
+      #       {
 
-  #         qemu = nixpkgs.lib.nixosSystem {
-  #           inherit system;
-  #           modules =
-  #             [
-  #               disko.nixosModules.default
-  #               ./hosts/qemu.nix
-  #             ]
-  #             ++ sharedModules;
-  #         };
+      #         qemu = nixpkgs.lib.nixosSystem {
+      #           inherit system;
+      #           modules =
+      #             [
+      #               disko.nixosModules.default
+      #               ./hosts/qemu.nix
+      #             ]
+      #             ++ sharedModules;
+      #         };
 
-  #         thinkpad = nixpkgs.lib.nixosSystem {
-  #           inherit system;
-  #           modules =
-  #             [
-  #               disko.nixosModules.default
-  #               ./hosts/thinkpad.nix
-  #             ]
-  #             ++ sharedModules;
-  #         };
+      #         thinkpad = nixpkgs.lib.nixosSystem {
+      #           inherit system;
+      #           modules =
+      #             [
+      #               disko.nixosModules.default
+      #               ./hosts/thinkpad.nix
+      #             ]
+      #             ++ sharedModules;
+      #         };
 
-  #         # hades = nixpkgs.lib.nixosSystem rec {
-  #         #   inherit system;
-  #         #   modules =
-  #         #     [
-  #         #       ./hades.nix
-  #         #     ]
-  #         #     ++ sharedModules;
-  #         # };
+      #         # hades = nixpkgs.lib.nixosSystem rec {
+      #         #   inherit system;
+      #         #   modules =
+      #         #     [
+      #         #       ./hades.nix
+      #         #     ]
+      #         #     ++ sharedModules;
+      #         # };
 
-  #         # boreal = nixpkgs.lib.nixosSystem rec {
-  #         #   inherit system;
-  #         #   modules =
-  #         #     [
-  #         #       ./boreal.nix
+      #         # boreal = nixpkgs.lib.nixosSystem rec {
+      #         #   inherit system;
+      #         #   modules =
+      #         #     [
+      #         #       ./boreal.nix
 
-  #         #       {
-  #         #         nixpkgs.overlays = [
-  #         #           # uncomment this to build everything from scratch, fun but takes a
-  #         #           # while
-  #         #           #
-  #         #           # (self: super: {
-  #         #           #   stdenv = super.impureUseNativeOptimizations super.stdenv;
-  #         #           # })
-  #         #         ];
-  #         #       }
-  #         #     ]
-  #         #     ++ sharedModules;
-  #         # };
+      #         #       {
+      #         #         nixpkgs.overlays = [
+      #         #           # uncomment this to build everything from scratch, fun but takes a
+      #         #           # while
+      #         #           #
+      #         #           # (self: super: {
+      #         #           #   stdenv = super.impureUseNativeOptimizations super.stdenv;
+      #         #           # })
+      #         #         ];
+      #         #       }
+      #         #     ]
+      #         #     ++ sharedModules;
+      #         # };
 
-  #         # hephaestus = nixpkgs.lib.nixosSystem rec {
-  #         #   inherit system;
-  #         #   modules =
-  #         #     [
-  #         #       ./hephaestus.nix
+      #         # hephaestus = nixpkgs.lib.nixosSystem rec {
+      #         #   inherit system;
+      #         #   modules =
+      #         #     [
+      #         #       ./hephaestus.nix
 
-  #         #       inputs.nixos-hardware.nixosModules.common-cpu-amd
-  #         #       inputs.nixos-hardware.nixosModules.common-gpu-amd
-  #         #       inputs.nixos-hardware.nixosModules.common-pc-laptop
-  #         #       inputs.nixos-hardware.nixosModules.common-pc-ssd
-  #         #     ]
-  #         #     ++ sharedModules;
-  #         # };
+      #         #       inputs.nixos-hardware.nixosModules.common-cpu-amd
+      #         #       inputs.nixos-hardware.nixosModules.common-gpu-amd
+      #         #       inputs.nixos-hardware.nixosModules.common-pc-laptop
+      #         #       inputs.nixos-hardware.nixosModules.common-pc-ssd
+      #         #     ]
+      #         #     ++ sharedModules;
+      #         # };
 
-  #         # thanatos = nixpkgs.lib.nixosSystem {
-  #         #   inherit system;
-  #         #   modules =
-  #         #     [
-  #         #       disko.nixosModules.default
-  #         #       ./thanatos.nix
-  #         #     ]
-  #         #     ++ sharedModules;
-  #         # };
-        # };
+      #         # thanatos = nixpkgs.lib.nixosSystem {
+      #         #   inherit system;
+      #         #   modules =
+      #         #     [
+      #         #       disko.nixosModules.default
+      #         #       ./thanatos.nix
+      #         #     ]
+      #         #     ++ sharedModules;
+      #         # };
+      # };
     };
   # # inputs.flake-utils.lib.eachDefaultSystem (system: {
   # #   packages =
